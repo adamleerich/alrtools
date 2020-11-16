@@ -783,7 +783,7 @@ vlookup <- function(
     lookup_value, table_array, col_index_number, type = 0, lookup_index = 1) {
   lookup_index <- lookup_index[1]
   lookup_value <- tolower(lookup_value)
-  levels <- tolower(table_array[, lookup_index])
+  levels <- tolower(table_array[[lookup_index]])
   table_array[factor(lookup_value, levels = levels), col_index_number]
 }
 
