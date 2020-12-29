@@ -780,8 +780,9 @@ read.csv0 <- curry(utils::read.csv, stringsAsFactors = FALSE)
 #'
 #' @export
 vlookup <- function(
-    lookup_value, table_array, col_index_number, type = 0, lookup_index = 1) {
+      lookup_value, table_array, col_index_number, type = 0, lookup_index = 1) {
   lookup_index <- lookup_index[1]
+  table_array <- table_array[!duplicated(table_array[[lookup_index]]), ]
   lookup_value <- tolower(lookup_value)
   levels <- tolower(table_array[[lookup_index]])
   table_array[factor(lookup_value, levels = levels), col_index_number]
@@ -875,81 +876,81 @@ intersection <- function(...) {
 
 
 
-#' Tabular summary of data.frame columns
+#' #' Tabular summary of data.frame columns
+#' #'
+#' #' @description
+#' #' Create a tabular form of summary info
+#' #'
+#' #' @param	dataframe   anything that can be coerced into a dataframe
+#' #'
+#' #'
+#' #' @return
+#' #' Like the summary function, but tabular and with more information
+#' #'
+#' #' @examples
+#' #' info(iris)
+#' #'
+#' #' @rdname info
+#' #' @export
+#' info <- function(x, ...) {
+#'   UseMethod("info")
+#' }
 #'
-#' @description
-#' Create a tabular form of summary info
-#'
-#' @param	dataframe   anything that can be coerced into a dataframe
 #'
 #'
-#' @return
-#' Like the summary function, but tabular and with more information
 #'
-#' @examples
-#' info(iris)
 #'
-#' @rdname info
-#' @export
-info <- function(x, ...) {
-  UseMethod("info")
-}
-
-
-
-
-
-#' @rdname info
-#' @export
-info.data.frame <- function(dataframe) {
-
-  out <- NULL
-  for (i in 1:ncol(dataframe)) {
-
-    v <- dataframe[, i, drop = TRUE]
-    num <- is.numeric(v) | is.logical(v)
-    lv <- length(v)
-    vn <- v[!is.na(v)]
-    uniques <- length(unique(vn))
-    typ <- class(v)
-
-    if (num) {
-      qv <- stats::quantile(
-        vn,
-        probs = c(0, 0.25, 0.5, 0.75, 1))
-      sdv <- sd(vn)
-      muv <- mean(vn)
-      zero_count = sum(vn == 0)
-      lvls <- NA
-    } else {
-      qv <- rep(NA, 5)
-      sdv <- NA
-      muv <- NA
-      zero_count = NA
-      lvls <- table(v) %>% sort(decreasing = TRUE) %>%
-        names %>% `[`(., 1:min(10, length(.))) %>% paste0(collapse = ', ')
-    }
-
-    qvr <- data.frame(
-      row.names = i,
-      column = names(dataframe)[i],
-      type = typ,
-      min = qv[1],
-      q25 = qv[2],
-      median = qv[3],
-      mean = muv,
-      q75 = qv[4],
-      max = qv[5],
-      sd = sdv,
-      zero_count,
-      # sd2ratio = sum(abs(vn - muv) < 2 * sdv) / length(vn),
-      na_count = lv - length(vn),
-      unique_values = uniques,
-      levels = lvls)
-
-    if (is.null(out)) {
-      out <- qvr } else { out <- rbind(out, qvr) }
-
-  }
-  return(out)
-}
+#' #' @rdname info
+#' #' @export
+#' info.data.frame <- function(dataframe) {
+#'
+#'   out <- NULL
+#'   for (i in 1:ncol(dataframe)) {
+#'
+#'     v <- dataframe[, i, drop = TRUE]
+#'     num <- is.numeric(v) | is.logical(v)
+#'     lv <- length(v)
+#'     vn <- v[!is.na(v)]
+#'     uniques <- length(unique(vn))
+#'     typ <- class(v)
+#'
+#'     if (num) {
+#'       qv <- stats::quantile(
+#'         vn,
+#'         probs = c(0, 0.25, 0.5, 0.75, 1))
+#'       sdv <- sd(vn)
+#'       muv <- mean(vn)
+#'       zero_count = sum(vn == 0)
+#'       lvls <- NA
+#'     } else {
+#'       qv <- rep(NA, 5)
+#'       sdv <- NA
+#'       muv <- NA
+#'       zero_count = NA
+#'       lvls <- table(v) %>% sort(decreasing = TRUE) %>%
+#'         names %>% `[`(., 1:min(10, length(.))) %>% paste0(collapse = ', ')
+#'     }
+#'
+#'     qvr <- data.frame(
+#'       row.names = i,
+#'       column = names(dataframe)[i],
+#'       type = typ,
+#'       min = qv[1],
+#'       q25 = qv[2],
+#'       median = qv[3],
+#'       mean = muv,
+#'       q75 = qv[4],
+#'       max = qv[5],
+#'       sd = sdv,
+#'       zero_count,
+#'       # sd2ratio = sum(abs(vn - muv) < 2 * sdv) / length(vn),
+#'       na_count = lv - length(vn),
+#'       unique_values = uniques,
+#'       levels = lvls)
+#'
+#'     if (is.null(out)) {
+#'       out <- qvr } else { out <- rbind(out, qvr) }
+#'
+#'   }
+#'   return(out)
+#' }
