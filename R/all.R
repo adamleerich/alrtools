@@ -974,3 +974,26 @@ info.data.frame <- function(dataframe) {
 }
 
 
+#' Table function where `useNA` is defaulted to `TRUE`
+#'
+#' @description
+#' Identical to `table(..., useNA = "always")`.
+#' The name is inspired by `paste0`.
+#'
+#' @param	...   arguments passed through to the `table` function
+#'
+#'
+#' @return
+#' Returns output of `table` but forces `NA` to always be counted
+#'
+#' @examples
+#' x <- sample(c(letters, NA), 1000, replace = TRUE)
+#' table(x)
+#' table(x, useNA = "always")
+#' table0(x)
+#'
+#' @export
+table0 <- function(...) {
+  table(..., useNA = "always")
+}
+
