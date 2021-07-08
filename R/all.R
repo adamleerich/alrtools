@@ -952,7 +952,7 @@ info.data.frame <- function(dataframe) {
     qvr <- data.frame(
       row.names = i,
       column = names(dataframe)[i],
-      type = typ,
+      type = paste(typ, collapse = " "),
       min = qv[1],
       q25 = qv[2],
       median = qv[3],
