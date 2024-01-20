@@ -640,7 +640,7 @@ HFactory  <- function(name, ignore.case = TRUE){
 
   # Also, now it allows for a case-sensitive function
   if(ignore.case) ic = 'TRUE' else ic = 'FALSE'
-  s <- paste0('function(pattern = \'\'){names(', name, ')[grep(pattern, names(', name, '), ignore.case = ',ic,')]}')
+  s <- paste0('function(pattern = \'\', ignore.case = ',ic,'){names(', name, ')[grep(pattern, names(', name, '), ignore.case = ignore.case)]}')
   return(eval(parse(text = s)))
 }
 
