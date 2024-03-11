@@ -169,6 +169,26 @@ quarter <- function(d){
 
 
 
+#' Quarter name of a date vector, e.g., 2023q2
+#'
+#' @param	d    a vector of dates
+#'
+#' @return
+#' Year and quarter concatenated delimited by the letter 'q'.
+#'
+#' @examples
+#' quarter_name(as.Date('2022-01-14'))
+#' quarter_name(ISOdate(1923, 12, 2))
+#'
+#' @export
+quarter_name <- function(d){
+  paste(year(d), quarter(d), sep = 'q')
+}
+
+
+
+
+
 
 #' Get a substring from the left
 #'
