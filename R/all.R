@@ -21,48 +21,54 @@ library(magrittr)
 
 
 
-
-#' A factor-safe version of \code{base::ifelse}
-#'
-#' @description
-#' The \code{\link[base]{ifelse}} function does weird
-#' things when you pass it factors.
-#' This version doesn't.
-#'
-#' @param	test   a vector of logicals
-#' @param	yes    values to return if test is TRUE
-#' @param	no     values to return if test if FALSE
-#'
-#' @return
-#' For each position, \code{ifelse} returns
-#' the value of \code{yes} or \code{no}
-#' depending on the value of \code{test}.
-#'
-#' @examples
-#' ifelse(
-#'   c(TRUE, FALSE),
-#'   c('Yes', 'Yeah!'),
-#'   c('No', 'Nope'))
-#'
-#' # base ifelse does weird stuff with factors
-#' yesf <- factor(c('Yes', 'Yeah!'))
-#' nof <- factor(c('No', 'Nope'))
-#' base::ifelse(c(TRUE, FALSE), yesf, nof)
-#' alrtools::ifelse(c(TRUE, FALSE), yesf, nof)
-#'
-#' @export
-ifelse <- function (test, yes, no) {
-
-  # This is to prepare for calling the base package function
-
-  # Unfactor yes and no if they are factors
-  if (is.factor(yes))  yes <- levels(yes)[yes]
-  if (is.factor(no))   no  <- levels(no)[no]
-
-  # The original function follows
-  base::ifelse(test, yes, no)
-
-}
+# [2024-09-24 ALR]
+# Removed
+#
+# base::ifelse only evaulates the YES or NO branches if it needs to
+# but alrtools::ifelse ALWAYS evaluates YES and NO
+# the problem is when the code in either branch advances the RNG state
+#
+# #' A factor-safe version of \code{base::ifelse}
+# #'
+# #' @description
+# #' The \code{\link[base]{ifelse}} function does weird
+# #' things when you pass it factors.
+# #' This version doesn't.
+# #'
+# #' @param	test   a vector of logicals
+# #' @param	yes    values to return if test is TRUE
+# #' @param	no     values to return if test if FALSE
+# #'
+# #' @return
+# #' For each position, \code{ifelse} returns
+# #' the value of \code{yes} or \code{no}
+# #' depending on the value of \code{test}.
+# #'
+# #' @examples
+# #' ifelse(
+# #'   c(TRUE, FALSE),
+# #'   c('Yes', 'Yeah!'),
+# #'   c('No', 'Nope'))
+# #'
+# #' # base ifelse does weird stuff with factors
+# #' yesf <- factor(c('Yes', 'Yeah!'))
+# #' nof <- factor(c('No', 'Nope'))
+# #' base::ifelse(c(TRUE, FALSE), yesf, nof)
+# #' alrtools::ifelse(c(TRUE, FALSE), yesf, nof)
+# #'
+# #' @export
+# ifelse <- function (test, yes, no) {
+#
+#   # This is to prepare for calling the base package function
+#
+#   # Unfactor yes and no if they are factors
+#   if (is.factor(yes))  yes <- levels(yes)[yes]
+#   if (is.factor(no))   no  <- levels(no)[no]
+#
+#   # The original function follows
+#   base::ifelse(test, yes, no)
+#
+# }
 
 
 
