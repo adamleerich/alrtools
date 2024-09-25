@@ -3,7 +3,13 @@
 #
 #   A bunch of convenience functions
 #
-#   copy.table and paste.table removed, use clipr instead
+#   copy.table, paste.table
+#     Removed
+#     Use clipr instead
+#
+#   day, month, year, quarter
+#     Removed
+#     Use tidyverse instead
 #
 
 
@@ -99,76 +105,72 @@ pmean <- function(..., na.rm = TRUE) {
 
 
 
-#' Year of a date vector
-#'
-#' @param	d    a vector of dates
-#'
-#' @return
-#' The year part of each value in \code{d}
-#' as an integer.
-#'
-#' @examples
-#' year(as.Date('2022-10-14'))
-#' year(ISOdate(1923, 12, 2))
-#'
-#' @export
+# #' Year of a date vector
+# #'
+# #' @param	d    a vector of dates
+# #'
+# #' @return
+# #' The year part of each value in \code{d}
+# #' as an integer.
+# #'
+# #' @examples
+# #' year(as.Date('2022-10-14'))
+# #' year(ISOdate(1923, 12, 2))
+# #'
 year <- function(d){
   as.integer(format(d, '%Y'))
 }
 
 
 
-#' Month of a date vector
-#'
-#' @param	d    a vector of dates
-#'
-#' @return
-#' The month part of each value in \code{d}
-#' as an integer.
-#'
-#' @examples
-#' month(as.Date('2022-10-14'))
-#' month(ISOdate(1923, 12, 2))
-#'
-#' @export
+# #' Month of a date vector
+# #'
+# #' @param	d    a vector of dates
+# #'
+# #' @return
+# #' The month part of each value in \code{d}
+# #' as an integer.
+# #'
+# #' @examples
+# #' month(as.Date('2022-10-14'))
+# #' month(ISOdate(1923, 12, 2))
+# #'
 month <- function(d) {
   as.integer(format(d, '%m'))
 }
 
 
 
-#' Day of a date vector
-#'
-#' @param	d    a vector of dates
-#'
-#' @return
-#' The day part of each value in \code{d}
-#' as an integer.
-#'
-#' @examples
-#' day(as.Date('2022-10-14'))
-#' day(ISOdate(1923, 12, 2))
-#'
-#' @export
+# #' Day of a date vector
+# #'
+# #' @param	d    a vector of dates
+# #'
+# #' @return
+# #' The day part of each value in \code{d}
+# #' as an integer.
+# #'
+# #' @examples
+# #' day(as.Date('2022-10-14'))
+# #' day(ISOdate(1923, 12, 2))
+# #'
 day <- function(d){
   as.integer(format(d, '%d'))
 }
 
 
 
-#' Quarter of a date vector
-#'
-#' @param	d    a vector of dates
-#'
-#' @return
-#' The quarter (1, 2, 3, or 4) each date in \code{d}
-#' falls in.
-#'
-#' @examples
-#' quarter(as.Date('2022-01-14'))
-#' quarter(ISOdate(1923, 12, 2))
-#'
-#' @export
+# #' Quarter of a date vector
+# #'
+# #' @param	d    a vector of dates
+# #'
+# #' @return
+# #' The quarter (1, 2, 3, or 4) each date in \code{d}
+# #' falls in.
+# #'
+# #' @examples
+# #' quarter(as.Date('2022-01-14'))
+# #' quarter(ISOdate(1923, 12, 2))
+# #'
 quarter <- function(d){
   rep(1:4, each = 3)[month(d)]
 }
