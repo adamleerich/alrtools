@@ -1087,3 +1087,55 @@ normalize_quote_characters <- function(x) {
     x = x)
   return(x)
 }
+
+
+
+
+#' Fix column names to be like conventional relational database names
+#'
+#' @description
+#' Fix column names to be like conventional relational database names
+#'
+#' @param	x   names to convert
+#'
+#'
+#' @return
+#' Returns fixed names guaranteed to be unique
+#'
+#' @examples
+#' x <- c(
+#'   "DR_NO", "Quarter", "Date Rptd",
+#'   "DATE OCC", "TIME OCC", "AREA", "AREA NAME",
+#'   "Rpt Dist No", "Part 1-2", "Crm Cd", "Crm Cd Desc", "Mocodes",
+#'   "Vict Age", "Vict Sex", "Vict Descent", "Premis Cd", "Premis Desc",
+#'   "Weapon Used Cd", "Weapon Desc", "Status", "Status Desc", "Crm Cd 1",
+#'   "Crm Cd 2", "Crm Cd 3", "Crm Cd 4", "LOCATION|().,{}''", "Cross Street",
+#'   "LAT", "LON", "FXEXCHANGERATE...COM",
+#'   "Currency Symbols     ", "_Currency Symbols - FX Exchange Rate",
+#'   "Home#", "Currency___Converter!",
+#'   "World__Countries", "Gold%", '    ', "Currency Codes(ISO)",
+#'   "100", "m$", "£", "€", "QUARTER")
+#' repair_names(x)
+#'
+#' @export
+repair_names <- function(x) {
+  y <- toupper(x)
+  y <- alrtools::trim(y)
+  y <- gsub('#', '_NUMBER_', y)
+  y <- gsub('%', '_PERCENT_', y)
+  y <- gsub('&', '_AND_', y)
+  y <- gsub('[$]', '_USD_', y)
+  y <- gsub('£', '_GBP_', y)
+  y <- gsub('€', '_EUR_', y)
+  y <- gsub('[^A-Z0-9_]', '.', y)
+  y <- gsub('[.]+', '.', y)
+  y <- gsub('_{3,}', '__', y)
+  y <- gsub('[.]', '_', y)
+  y <- gsub('(^_+|_+$)', '', y)
+  y <- gsub('^X{0,1}[_0-9]*$', 'X', y)
+
+  ifelse(
+    duplicated(y) | duplicated(y, fromLast = TRUE) | y == 'X',
+    paste(y, 1:length(x), sep = '___'),
+    y)
+}
