@@ -977,6 +977,7 @@ info.data.frame <- function(dataframe) {
 
     qvr <- data.frame(
       row.names = i,
+      column_index = i,
       column = names(dataframe)[i],
       type = paste(typ, collapse = " "),
       min = qv[1],
