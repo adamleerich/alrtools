@@ -339,16 +339,16 @@ execute_in <- function(f, env, ...) {
 #' @examples
 #' my_func <- function(a, b) {a - b * 2 + a^2}
 #' temp_R <- tempfile(fileext = '.R')
-#' kode <- write.function(my_func, file = temp_R)
+#' kode <- write_function(my_func, file = temp_R)
 #' print(kode)
 #'
-#' kode <- write.function(my_func, file = temp_R, name = "diff_name")
+#' kode <- write_function(my_func, file = temp_R, name = "diff_name")
 #' print(kode)
 #'
 #' print(readLines(temp_R))
 #'
 #' @export
-write.function <- function(f, file, name = NULL) {
+write_function <- function(f, file, name = NULL) {
   if (is.null(name)) {
     name <- as.character(match.call(expand.dots = FALSE)$f)
   }
@@ -364,7 +364,7 @@ write.function <- function(f, file, name = NULL) {
 #' Write the code of a package to a file
 #'
 #' @description
-#' Uses \code{\link{write.package}} to write
+#' Uses \code{\link{write_package}} to write
 #' every function in a package to a specified directory.
 #'
 #' @param	pkg       the package of interest
@@ -374,16 +374,16 @@ write.function <- function(f, file, name = NULL) {
 #' Nothing
 #'
 #' @examples
-#' # write.package('alrtools', 'some/folder/')
+#' # write_package('alrtools', 'some/folder/')
 #'
 #' @export
-write.package <- function(pkg, folder) {
+write_package <- function(pkg, folder) {
   dir.create(folder, showWarnings = FALSE)
   fs <- ls(getNamespace(pkg), all.names = TRUE)
   for (f in fs) {
     g <- get(f, envir = getNamespace(pkg))
     p <- paste0(folder, '/', f, '.R')
-    write.function(g, p, f)
+    write_function(g, p, f)
   }
 }
 
