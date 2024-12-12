@@ -38,7 +38,7 @@ pmean <- function(..., na.rm = TRUE) {
 #'
 #' @export
 quarter_name <- function(d){
-  stopifnot(any(c('Date', 'POSIXct', 'POSIXt') %in% class(d)))
+  stopifnot(any(c('Date', 'POSIXct', 'POSIXlt', 'POSIXt') %in% class(d)))
   y <- as.integer(format(d, '%Y'))
   m <- as.integer(format(d, '%m'))
   q <- rep(1:4, each = 3)[m]
