@@ -997,14 +997,11 @@ xlookup <- function(
 
   ux <- as.character(x)
   ulookup <- as.character(lookup_vector)
-  ureturn <- as.character(return_vector)
 
   if (ignore_case) {
     ux <- toupper(ux)
     ulookup <- toupper(ulookup)
   }
-
-  map <- data.frame(ulookup, ureturn)
 
   if (warn) {
     missing <- setdiff(ux, c(ulookup, NA))
