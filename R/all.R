@@ -777,49 +777,51 @@ cnumeric <- function(v) {
 
 
 
-
-#' Excel-like \code{VLOOKUP} function
-#'
-#' @description
-#' Works just like Excel's \code{VLOOKUP} function
-#' with a few improvements.
-#'
-#' @param	lookup_value        a vector of values you want to match in the \code{table_array} column of interest
-#' @param	table_array         the data you are "looking up" in
-#' @param	col_index_number    the index of the column you want to return
-#' @param	type                0 = exact match.  No other method is currently supported
-#' @param	lookup_index        the column index of the column \code{lookup_value} is matched to
-#'                              (In Excel, this is always "1")
-#'
-#' @return
-#' Returns a vector of values with the same length as \code{lookup_value}.
-#' If a value is not found, then NA is returned.
-#' Unlike Excel, the column we are matching against cannot have duplicates.
-#'
-#' @examples
-#' ref <- data.frame(
-#'   state = c('UT', 'FL', 'NY', 'CA', 'SD'),
-#'   category = c(1, 2, 3, 3, 1)
-#' )
-#'
-#' vlookup('CA', ref, 1, 0)
-#' vlookup('CA', ref, 2, 0)
-#'
-#' vlookup(c('CA', 'FL', 'KY'), ref, 2, 0)
-#'
-#' ref[2, 2] <- 4
-#' vlookup('FL', ref, 2, 0)
-#'
-#'
-#' @export
-vlookup <- function(
-      lookup_value, table_array, col_index_number, type = 0, lookup_index = 1) {
-  lookup_index <- lookup_index[1]
-  table_array <- table_array[!duplicated(table_array[[lookup_index]]), ]
-  lookup_value <- tolower(lookup_value)
-  levels <- tolower(table_array[[lookup_index]])
-  table_array[factor(lookup_value, levels = levels), col_index_number]
-}
+# [2024-12-11 ALR]
+# Use xlookup instead
+#
+# #' Excel-like \code{VLOOKUP} function
+# #'
+# #' @description
+# #' Works just like Excel's \code{VLOOKUP} function
+# #' with a few improvements.
+# #'
+# #' @param	lookup_value        a vector of values you want to match in the \code{table_array} column of interest
+# #' @param	table_array         the data you are "looking up" in
+# #' @param	col_index_number    the index of the column you want to return
+# #' @param	type                0 = exact match.  No other method is currently supported
+# #' @param	lookup_index        the column index of the column \code{lookup_value} is matched to
+# #'                              (In Excel, this is always "1")
+# #'
+# #' @return
+# #' Returns a vector of values with the same length as \code{lookup_value}.
+# #' If a value is not found, then NA is returned.
+# #' Unlike Excel, the column we are matching against cannot have duplicates.
+# #'
+# #' @examples
+# #' ref <- data.frame(
+# #'   state = c('UT', 'FL', 'NY', 'CA', 'SD'),
+# #'   category = c(1, 2, 3, 3, 1)
+# #' )
+# #'
+# #' vlookup('CA', ref, 1, 0)
+# #' vlookup('CA', ref, 2, 0)
+# #'
+# #' vlookup(c('CA', 'FL', 'KY'), ref, 2, 0)
+# #'
+# #' ref[2, 2] <- 4
+# #' vlookup('FL', ref, 2, 0)
+# #'
+# #'
+# #' @export
+# vlookup <- function(
+#       lookup_value, table_array, col_index_number, type = 0, lookup_index = 1) {
+#   lookup_index <- lookup_index[1]
+#   table_array <- table_array[!duplicated(table_array[[lookup_index]]), ]
+#   lookup_value <- tolower(lookup_value)
+#   levels <- tolower(table_array[[lookup_index]])
+#   table_array[factor(lookup_value, levels = levels), col_index_number]
+# }
 
 
 
@@ -1196,4 +1198,89 @@ load_csv <- function(
 
 
 
+#' Excel-like \code{XLOOKUP} function
+#'
+#' @description
+#' Works like Excel's \code{XLOOKUP} function
+#'
+#' @param	x               a vector of values you want to match in \code{lookup_vector}
+#' @param	lookup_vector   the vector to match in -- get the index for \code{return_vector}
+#' @param	return_vector   the vector to return from
+#' @param	warn            TRUE will list values of \code{x} that are not found in \code{lookup_vector}
+#' @param	ignore_case     TRUE will do a case insensitive match of \code{x} on \code{lookup_vector}
+#'
+#' @return
+#' Returns a vector of values with the same length as \code{lookup_vector}.
+#' If a value is not found, then NA is returned.
+#' NA can be mapped to a non-NA value.
+#'
+#' @examples
+#' ref <- data.frame(
+#'   state = c('UT', 'SD', 'FL', NA, 'NY', 'CA'),
+#'   category = c(1, 2, 5, 10, 6, 7)
+#' )
+#'
+#' xlookup('CA', ref$state, ref$category)
+#' xlookup('KY', ref$state, ref$category)
+#' xlookup(NA, ref$state, ref$category)
+#'
+#' @export
+xlookup <- function(
+    x, lookup_vector,
+    return_vector = NULL,
+    warn = TRUE,
+    ignore_case = TRUE) {
 
+  if (length(x) == 0)
+    return(character(0))
+
+  if (length(lookup_vector) == 0) {
+    warning('lookup_vector is empty')
+    return(rep(NA_character_, length(x)))
+  }
+
+  if (sum(duplicated(lookup_vector)) > 0)
+    stop('lookup_vector has duplicate entries')
+
+  if (is.null(return_vector))
+    return_vector <- 1:length(lookup_vector)
+
+  if (length(lookup_vector) != length(return_vector))
+    stop('lookup_vector and return_vector must be the same length')
+
+  NA_index <- which(is.na(lookup_vector))
+  has_NA <- length(NA_index) == 1
+
+  if (has_NA) {
+    return_NA <- return_vector[NA_index]
+    lookup_vector <- lookup_vector[-NA_index]
+    return_vector <- return_vector[-NA_index]
+  } else {
+    return_NA <- NA
+  }
+
+  ux <- as.character(x)
+  ulookup <- as.character(lookup_vector)
+  ureturn <- as.character(return_vector)
+
+  if (ignore_case) {
+    ux <- toupper(ux)
+    ulookup <- toupper(ulookup)
+  }
+
+  map <- data.frame(ulookup, ureturn)
+
+  if (warn) {
+    missing <- setdiff(ux, c(ulookup, NA))
+    if (length(missing) > 0) {
+      warning(
+        '\nMissing values:\n',
+        paste0(missing, collapse = '\n'))
+    }
+  }
+
+  output <- return_vector[as.integer(factor(ux, levels = ulookup))]
+  output[is.na(ux)] <- return_NA
+  return(output)
+
+}

@@ -6,7 +6,6 @@ Authors@R: person(given = "Adam", family = "Rich", email = "adam@adamleerich.com
 Maintainer@R: person(given = "Adam", family = "Rich", email = "adam@adamleerich.com", role = c("aut", "cre", "cph"), comment = c(ORCID = "0009-0007-0992-1956"))
 Description: Hello, my name is Adam.  I wrote some code in R.  
 License: CC0
-LazyData: TRUE
 Suggests: testthat
 Imports: knitr, readr
 RoxygenNote: 7.3.2
