@@ -2,9 +2,7 @@
 % Please edit documentation in R/all.R
 \name{pmean}
 \alias{pmean}
-\title{#' @import knitr
-library(knitr)
-Piecewise mean}
+\title{Piecewise mean}
 \usage{
 pmean(..., na.rm = TRUE)
 }

@@ -1,85 +1,3 @@
-# Author: Adam L. Rich
-# Description:
-#
-#   A bunch of convenience functions
-#
-#   copy.table, paste.table
-#     Removed
-#     Use clipr instead
-#
-#   day, month, year, quarter
-#     Removed
-#     Use tidyverse instead
-#
-
-
-#' #' @import knitr
-#' library(knitr)
-
-
-
-# [2024-12-11 ALR]
-# Removed -- never used
-#
-# #' Euler's number
-# #' @description 2.718282
-# "e"
-# # Defined in data-raw/build-templates.R
-
-
-
-# [2024-09-24 ALR]
-# Removed
-#
-# base::ifelse only evaulates the YES or NO branches if it needs to
-# but alrtools::ifelse ALWAYS evaluates YES and NO
-# the problem is when the code in either branch advances the RNG state
-#
-# #' A factor-safe version of \code{base::ifelse}
-# #'
-# #' @description
-# #' The \code{\link[base]{ifelse}} function does weird
-# #' things when you pass it factors.
-# #' This version doesn't.
-# #'
-# #' @param	test   a vector of logicals
-# #' @param	yes    values to return if test is TRUE
-# #' @param	no     values to return if test if FALSE
-# #'
-# #' @return
-# #' For each position, \code{ifelse} returns
-# #' the value of \code{yes} or \code{no}
-# #' depending on the value of \code{test}.
-# #'
-# #' @examples
-# #' ifelse(
-# #'   c(TRUE, FALSE),
-# #'   c('Yes', 'Yeah!'),
-# #'   c('No', 'Nope'))
-# #'
-# #' # base ifelse does weird stuff with factors
-# #' yesf <- factor(c('Yes', 'Yeah!'))
-# #' nof <- factor(c('No', 'Nope'))
-# #' base::ifelse(c(TRUE, FALSE), yesf, nof)
-# #' alrtools::ifelse(c(TRUE, FALSE), yesf, nof)
-# #'
-# #' @export
-# ifelse <- function (test, yes, no) {
-#
-#   # This is to prepare for calling the base package function
-#
-#   # Unfactor yes and no if they are factors
-#   if (is.factor(yes))  yes <- levels(yes)[yes]
-#   if (is.factor(no))   no  <- levels(no)[no]
-#
-#   # The original function follows
-#   base::ifelse(test, yes, no)
-#
-# }
-
-
-
-
 #' Piecewise mean
 #'
 #' @description
@@ -106,77 +24,6 @@ pmean <- function(..., na.rm = TRUE) {
 
 
 
-# #' Year of a date vector
-# #'
-# #' @param	d    a vector of dates
-# #'
-# #' @return
-# #' The year part of each value in \code{d}
-# #' as an integer.
-# #'
-# #' @examples
-# #' year(as.Date('2022-10-14'))
-# #' year(ISOdate(1923, 12, 2))
-# #'
-year <- function(d){
-  as.integer(format(d, '%Y'))
-}
-
-
-
-# #' Month of a date vector
-# #'
-# #' @param	d    a vector of dates
-# #'
-# #' @return
-# #' The month part of each value in \code{d}
-# #' as an integer.
-# #'
-# #' @examples
-# #' month(as.Date('2022-10-14'))
-# #' month(ISOdate(1923, 12, 2))
-# #'
-month <- function(d) {
-  as.integer(format(d, '%m'))
-}
-
-
-
-# #' Day of a date vector
-# #'
-# #' @param	d    a vector of dates
-# #'
-# #' @return
-# #' The day part of each value in \code{d}
-# #' as an integer.
-# #'
-# #' @examples
-# #' day(as.Date('2022-10-14'))
-# #' day(ISOdate(1923, 12, 2))
-# #'
-day <- function(d){
-  as.integer(format(d, '%d'))
-}
-
-
-
-# #' Quarter of a date vector
-# #'
-# #' @param	d    a vector of dates
-# #'
-# #' @return
-# #' The quarter (1, 2, 3, or 4) each date in \code{d}
-# #' falls in.
-# #'
-# #' @examples
-# #' quarter(as.Date('2022-01-14'))
-# #' quarter(ISOdate(1923, 12, 2))
-# #'
-quarter <- function(d){
-  rep(1:4, each = 3)[month(d)]
-}
-
-
 
 #' Quarter name of a date vector, e.g., 2023q2
 #'
@@ -191,10 +38,12 @@ quarter <- function(d){
 #'
 #' @export
 quarter_name <- function(d){
-  paste(year(d), quarter(d), sep = 'q')
+  stopifnot(any(c('Date', 'POSIXct', 'POSIXt') %in% class(d)))
+  y <- as.integer(format(d, '%Y'))
+  m <- as.integer(format(d, '%m'))
+  q <- rep(1:4, each = 3)[m]
+  paste(y, q, sep = 'q')
 }
-
-
 
 
 
@@ -227,6 +76,7 @@ left <- function(string, n) {
     last = n
   )
 }
+
 
 
 
@@ -265,6 +115,7 @@ right <- function(string, n) {
     last = nchar(string)
   )
 }
+
 
 
 
@@ -365,6 +216,7 @@ open_test <- function(test, pkg = basename(getwd()), engine = 'testthat') {
 
 
 
+
 #' Load Rdata to an environment
 #'
 #' @description
@@ -386,11 +238,10 @@ open_test <- function(test, pkg = basename(getwd()), engine = 'testthat') {
 #'
 #' @export
 load_env <- function(RData, env = new.env()){
-  # con <- gzfile(RData)
-  # on.exit(close(con))
   base::load(RData, env)
   return(env)
 }
+
 
 
 
@@ -419,6 +270,7 @@ source_env <- function(RScript, env = new.env()){
     env
   })
 }
+
 
 
 
@@ -467,7 +319,6 @@ execute_in <- function(f, env, ...) {
   environment(gox) <- env
   gox(...)
 }
-
 
 
 
@@ -584,44 +435,6 @@ curry <- function(FUN, ...){
   formals(FUN) <- ff
   return(FUN)
 }
-
-
-
-
-# #' RETIRED VERSION Pre-evaluate arguments of a function
-# #'
-# #' @description
-# #' To curry a function means to pre-evaluate some of the arguments
-# #' So, if you have a function
-# #'   \code{sum <- function(a, b) {a + b}}
-# #'
-# #' And you always want \code{b} to be 1, you could define
-# #'   \code{add.one <- curry(sum, b = 1)}
-# #'
-# #' Which is the same as
-# #'   \code{function(a) {a + 1}}
-# #'
-# #'
-# #' @param	FUN        the function we are currying
-# #' @param	...        the arguments you want to pre-evaluate
-# #'
-# #' @return
-# #' the new curried function
-# #'
-# #' @examples
-# #' sum <- function(a, b) {a + b}
-# #' add.one <- curry(sum, b = 1)
-# #' function(a) {a + 1}
-# curry_v1 <- function(FUN, ...) {
-#
-#   # curry works because list evaluates its arguments
-#   .orig = list(...)
-#
-#   # The ... referenced here is the remainder
-#   #   of the args passed to the curried function
-#   #   when it is called
-#   function(...) do.call(FUN, c(.orig, list(...)))
-# }
 
 
 
@@ -751,83 +564,6 @@ cnumeric <- function(v) {
 
 
 
-# #' Read CSVs without factors
-# #'
-# #' @description
-# #' \code{read.csv0} is to \code{read.csv} what
-# #' \code{paste0} is to \code{paste}.
-# #' More often that not, I see people using \code{read.csv}
-# #' with \code{stringsAsFactors = FALSE} (like you will
-# #' often see people calling \code{paste} with \code{sep = ''}).
-# #' This is a variant where \code{stringsAsFactors} is preset.
-# #' Relies on the \code{\link{curry}} function.
-# #'
-# #' @param	...     See parameters for \code{\link{read.csv}}
-# #'
-# #' @return
-# #' See help page for \code{\link{read.csv}}
-# #'
-# #' @examples
-# #' # See help page for \code{\link{read.csv}}
-# #'
-# #' @export
-# read.csv0 <- curry(utils::read.csv, stringsAsFactors = FALSE)
-
-
-
-
-
-# [2024-12-11 ALR]
-# Use xlookup instead
-#
-# #' Excel-like \code{VLOOKUP} function
-# #'
-# #' @description
-# #' Works just like Excel's \code{VLOOKUP} function
-# #' with a few improvements.
-# #'
-# #' @param	lookup_value        a vector of values you want to match in the \code{table_array} column of interest
-# #' @param	table_array         the data you are "looking up" in
-# #' @param	col_index_number    the index of the column you want to return
-# #' @param	type                0 = exact match.  No other method is currently supported
-# #' @param	lookup_index        the column index of the column \code{lookup_value} is matched to
-# #'                              (In Excel, this is always "1")
-# #'
-# #' @return
-# #' Returns a vector of values with the same length as \code{lookup_value}.
-# #' If a value is not found, then NA is returned.
-# #' Unlike Excel, the column we are matching against cannot have duplicates.
-# #'
-# #' @examples
-# #' ref <- data.frame(
-# #'   state = c('UT', 'FL', 'NY', 'CA', 'SD'),
-# #'   category = c(1, 2, 3, 3, 1)
-# #' )
-# #'
-# #' vlookup('CA', ref, 1, 0)
-# #' vlookup('CA', ref, 2, 0)
-# #'
-# #' vlookup(c('CA', 'FL', 'KY'), ref, 2, 0)
-# #'
-# #' ref[2, 2] <- 4
-# #' vlookup('FL', ref, 2, 0)
-# #'
-# #'
-# #' @export
-# vlookup <- function(
-#       lookup_value, table_array, col_index_number, type = 0, lookup_index = 1) {
-#   lookup_index <- lookup_index[1]
-#   table_array <- table_array[!duplicated(table_array[[lookup_index]]), ]
-#   lookup_value <- tolower(lookup_value)
-#   levels <- tolower(table_array[[lookup_index]])
-#   table_array[factor(lookup_value, levels = levels), col_index_number]
-# }
-
-
-
-
-
-
 #' Doc writing: get LaTeX of a matrix
 #'
 #' @description
@@ -871,7 +607,6 @@ matrix2latex <- function(
 
 
 
-
 #' Intersection of sets
 #'
 #' @description
@@ -905,8 +640,6 @@ intersection <- function(...) {
   }
   return(out)
 }
-
-
 
 
 
@@ -990,6 +723,8 @@ info <- function(dataframe) {
 }
 
 
+
+
 #' Table function where `useNA` is defaulted to `TRUE`
 #'
 #' @description
@@ -1012,6 +747,7 @@ info <- function(dataframe) {
 table0 <- function(...) {
   table(..., useNA = "always")
 }
+
 
 
 
