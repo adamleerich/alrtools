@@ -4,10 +4,10 @@
 \alias{info}
 \title{Tabular summary of data.frame columns}
 \usage{
-info(x, ...)
+info(dataframe)
 }
 \arguments{
-\item{dataframe}{anything that can be coerced into a dataframe}
+\item{dataframe}{anything that can be coerced into a data frame}
 }
 \value{
 Like the summary function, but tabular and with more information

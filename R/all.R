@@ -13,17 +13,18 @@
 #
 
 
-#' @import knitr
-#' @import magrittr
-library(knitr)
-library(magrittr)
+#' #' @import knitr
+#' library(knitr)
 
 
 
-#' Euler's number
-#' @description 2.718282
-"e"
-# Defined in data-raw/build-templates.R
+# [2024-12-11 ALR]
+# Removed -- never used
+#
+# #' Euler's number
+# #' @description 2.718282
+# "e"
+# # Defined in data-raw/build-templates.R
 
 
 
@@ -587,40 +588,40 @@ curry <- function(FUN, ...){
 
 
 
-#' RETIRED VERSION Pre-evaluate arguments of a function
-#'
-#' @description
-#' To curry a function means to pre-evaluate some of the arguments
-#' So, if you have a function
-#'   \code{sum <- function(a, b) {a + b}}
-#'
-#' And you always want \code{b} to be 1, you could define
-#'   \code{add.one <- curry(sum, b = 1)}
-#'
-#' Which is the same as
-#'   \code{function(a) {a + 1}}
-#'
-#'
-#' @param	FUN        the function we are currying
-#' @param	...        the arguments you want to pre-evaluate
-#'
-#' @return
-#' the new curried function
-#'
-#' @examples
-#' sum <- function(a, b) {a + b}
-#' add.one <- curry(sum, b = 1)
-#' function(a) {a + 1}
-curry_v1 <- function(FUN, ...) {
-
-  # curry works because list evaluates its arguments
-  .orig = list(...)
-
-  # The ... referenced here is the remainder
-  #   of the args passed to the curried function
-  #   when it is called
-  function(...) do.call(FUN, c(.orig, list(...)))
-}
+# #' RETIRED VERSION Pre-evaluate arguments of a function
+# #'
+# #' @description
+# #' To curry a function means to pre-evaluate some of the arguments
+# #' So, if you have a function
+# #'   \code{sum <- function(a, b) {a + b}}
+# #'
+# #' And you always want \code{b} to be 1, you could define
+# #'   \code{add.one <- curry(sum, b = 1)}
+# #'
+# #' Which is the same as
+# #'   \code{function(a) {a + 1}}
+# #'
+# #'
+# #' @param	FUN        the function we are currying
+# #' @param	...        the arguments you want to pre-evaluate
+# #'
+# #' @return
+# #' the new curried function
+# #'
+# #' @examples
+# #' sum <- function(a, b) {a + b}
+# #' add.one <- curry(sum, b = 1)
+# #' function(a) {a + 1}
+# curry_v1 <- function(FUN, ...) {
+#
+#   # curry works because list evaluates its arguments
+#   .orig = list(...)
+#
+#   # The ... referenced here is the remainder
+#   #   of the args passed to the curried function
+#   #   when it is called
+#   function(...) do.call(FUN, c(.orig, list(...)))
+# }
 
 
 
@@ -750,27 +751,27 @@ cnumeric <- function(v) {
 
 
 
-#' Read CSVs without factors
-#'
-#' @description
-#' \code{read.csv0} is to \code{read.csv} what
-#' \code{paste0} is to \code{paste}.
-#' More often that not, I see people using \code{read.csv}
-#' with \code{stringsAsFactors = FALSE} (like you will
-#' often see people calling \code{paste} with \code{sep = ''}).
-#' This is a variant where \code{stringsAsFactors} is preset.
-#' Relies on the \code{\link{curry}} function.
-#'
-#' @param	...     See parameters for \code{\link{read.csv}}
-#'
-#' @return
-#' See help page for \code{\link{read.csv}}
-#'
-#' @examples
-#' # See help page for \code{\link{read.csv}}
-#'
-#' @export
-read.csv0 <- curry(utils::read.csv, stringsAsFactors = FALSE)
+# #' Read CSVs without factors
+# #'
+# #' @description
+# #' \code{read.csv0} is to \code{read.csv} what
+# #' \code{paste0} is to \code{paste}.
+# #' More often that not, I see people using \code{read.csv}
+# #' with \code{stringsAsFactors = FALSE} (like you will
+# #' often see people calling \code{paste} with \code{sep = ''}).
+# #' This is a variant where \code{stringsAsFactors} is preset.
+# #' Relies on the \code{\link{curry}} function.
+# #'
+# #' @param	...     See parameters for \code{\link{read.csv}}
+# #'
+# #' @return
+# #' See help page for \code{\link{read.csv}}
+# #'
+# #' @examples
+# #' # See help page for \code{\link{read.csv}}
+# #'
+# #' @export
+# read.csv0 <- curry(utils::read.csv, stringsAsFactors = FALSE)
 
 
 
@@ -913,7 +914,7 @@ intersection <- function(...) {
 #' @description
 #' Create a tabular form of summary info
 #'
-#' @param	dataframe   anything that can be coerced into a dataframe
+#' @param	dataframe   anything that can be coerced into a data frame
 #'
 #'
 #' @return
@@ -923,31 +924,7 @@ intersection <- function(...) {
 #' info(iris)
 #'
 #' @export
-info <- function(x, ...) {
-  UseMethod("info")
-}
-
-
-
-
-
-#' Tabular summary of data.frame columns
-#'
-#' @description
-#' Create a tabular form of summary info
-#'
-#' @param	dataframe   anything that can be coerced into a dataframe
-#'
-#'
-#' @return
-#' Like the summary function, but tabular and with more information
-#'
-#' @examples
-#' info(iris)
-#'
-#' @export
-info.data.frame <- function(dataframe) {
-
+info <- function(dataframe) {
   out <- NULL
   for (i in 1:ncol(dataframe)) {
 
@@ -962,7 +939,7 @@ info.data.frame <- function(dataframe) {
       qv <- stats::quantile(
         vn,
         probs = c(0, 0.25, 0.5, 0.75, 1))
-      sdv <- sd(vn)
+      sdv <- stats::sd(vn)
       muv <- mean(vn)
       zero_count = sum(vn == 0)
       lvls <- NA
@@ -971,8 +948,8 @@ info.data.frame <- function(dataframe) {
       sdv <- NA
       muv <- NA
       zero_count = NA
-      lvls <- table(v) %>% sort(decreasing = TRUE) %>%
-        names %>% `[`(., 1:min(10, length(.))) %>% paste0(collapse = ', ')
+      lvls <- names(sort(table(v), decreasing = TRUE))
+      lvls <- paste0(lvls[1:min(10, length(lvls))], collapse = ', ')
     }
 
     qvr <- data.frame(
@@ -997,6 +974,16 @@ info.data.frame <- function(dataframe) {
       out <- qvr } else { out <- rbind(out, qvr) }
 
   }
+
+  if (!is.null(attr(dataframe, 'original_header'))) {
+    original_header <- attr(dataframe, 'original_header')
+    if (ncol(dataframe) == length(original_header)) {
+      out$original_header <- original_header
+    } else {
+      warning('dataframe has an original_header attribute, but it is the wrong length')
+    }
+  }
+
   return(out)
 }
 
@@ -1033,6 +1020,8 @@ table0 <- function(...) {
 #' including smart quotes and non-English quote characters,
 #' with straight English quotes: `"` or `'`.
 #' See https://stackoverflow.com/a/47173868.
+#'
+#' @param x a character vector to normalize
 #'
 #' @return
 #' Returns a character vector with quote-likes replaced.
@@ -1116,18 +1105,18 @@ normalize_quote_characters <- function(x) {
 #'   "Home#", "Currency___Converter!",
 #'   "World__Countries", "Gold%", '    ', "Currency Codes(ISO)",
 #'   "100", "m$", "£", "€", "QUARTER")
-#' repair_names(x)
+#' repair_header(x)
 #'
 #' @export
-repair_names <- function(x) {
+repair_header <- function(x) {
   y <- toupper(x)
   y <- alrtools::trim(y)
   y <- gsub('\\s*#\\s*', '_NUMBER_', y)
   y <- gsub('\\s*%\\s*', '_PERCENT_', y)
   y <- gsub('\\s*&\\s*', '_AND_', y)
   y <- gsub('\\s*[$]\\s*', '_USD_', y)
-  y <- gsub('\\s*£\\s*', '_GBP_', y)
-  y <- gsub('\\s*€\\s*', '_EUR_', y)
+  y <- gsub('\\s*\u00a3\\s*', '_GBP_', y)
+  y <- gsub('\\s*\u20ac\\s*', '_EUR_', y)
   y <- gsub('[^A-Z0-9_]', '.', y)
   y <- gsub('[.]+', '.', y)
   y <- gsub('_{3,}', '__', y)
@@ -1140,3 +1129,71 @@ repair_names <- function(x) {
     paste(y, 1:length(x), sep = '___'),
     y)
 }
+
+
+
+
+#' Load CSV with info about original header
+#'
+#' @description
+#' A wrapper for readr::read_csv that uses alrtools::repair_header
+#' to fix the header, but keeps a copy of the original values in an attribute.
+#'
+#' @param	path        path to the CSV file to load
+#' @param col_types   One of NULL, a cols() specification, or a string. See vignette("readr") for more details.
+#' @param na          values to replace with NA -- defaults to Excel errors
+#' @param ...         other arguments passed to readr::read_csv
+#'
+#'
+#' @return
+#' Returns a tibble of the CSV file
+#'
+#' @examples
+#' my_data <- data.frame(
+#'   'Seq No' = 1:26,
+#'   'Uppercase Letters' = LETTERS,
+#'   'Lowercase Letters' = letters,
+#'   check.names = FALSE)
+#'
+#' temp_path <- tempfile(fileext = '.csv')
+#' write.csv(x = my_data, file = temp_path, row.names = FALSE)
+#'
+#' my_data_reloaded <- load_csv(temp_path)
+#'
+#' # Fixed Names
+#' names(my_data_reloaded)
+#'
+#' # Original Names
+#' attr(my_data_reloaded, 'original_header')
+#'
+#' # Clean Up
+#' unlink(temp_path)
+#'
+#' @export
+load_csv <- function(
+    path,
+    col_types = NULL,
+    na = c('', 'NA', '#N/A', '#DIV/0!', '#NAME?', '#REF!', '#VALUE!', '#NULL!'),
+    ...) {
+
+  # Load un-edited header
+  h <- utils::read.csv(path, header = FALSE, nrows = 1)
+  h <- unname(unlist(h))
+
+  if (is.null(col_types))
+    col_types <- readr::cols(.default = readr::col_guess())
+
+  d <- readr::read_csv(
+    file = path,
+    col_types = col_types,
+    name_repair = alrtools::repair_header,
+    na = na, ...)
+
+  attr(d, 'original_header') <- h
+  return(d)
+}
+
+
+
+
+

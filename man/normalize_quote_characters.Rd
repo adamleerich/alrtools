@@ -6,6 +6,9 @@
 \usage{
 normalize_quote_characters(x)
 }
+\arguments{
+\item{x}{a character vector to normalize}
+}
 \value{
 Returns a character vector with quote-likes replaced.
 }

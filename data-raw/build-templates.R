@@ -6,6 +6,9 @@ usethis::use_data(test_template, internal = TRUE, overwrite = TRUE)
 
 
 
-## Define Euler's number
-e <- exp(1)
-usethis::use_data(e, internal = FALSE)
+# [2024-12-11 ALR]
+# Removed -- never used
+#
+# ## Define Euler's number
+# e <- exp(1)
+# usethis::use_data(e, internal = FALSE)
