@@ -7,7 +7,7 @@
 load_csv(
   path,
   col_types = NULL,
-  na = c("", "NA", "#N/A", "#DIV/0!", "#NAME?", "#REF!", "#VALUE!", "#NULL!"),
+  na = c("", "NA", "#N/A", "#DIV/0!", "#NAME?", "#REF!", "#VALUE!", "#NULL!", "N/A"),
   ...
 )
 }

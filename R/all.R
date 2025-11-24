@@ -911,7 +911,7 @@ repair_header <- function(x) {
 load_csv <- function(
     path,
     col_types = NULL,
-    na = c('', 'NA', '#N/A', '#DIV/0!', '#NAME?', '#REF!', '#VALUE!', '#NULL!'),
+    na = c('', 'NA', '#N/A', '#DIV/0!', '#NAME?', '#REF!', '#VALUE!', '#NULL!', 'N/A'),
     ...) {
 
   # Load un-edited header
@@ -1017,3 +1017,84 @@ xlookup <- function(
   return(output)
 
 }
+
+
+
+
+
+
+#' Convert a date to an integer to match Excel
+#'
+#' @description
+#' Convert a date to an integer to match Excel
+#'
+#' @param	x   a date object, or anything that can be cast as a numeric
+#'
+#' @return
+#' Returns a vector of values with the same length as \code{x}.
+#' Where Jan 1, 1970, returns 25569 to match Excel's internal
+#' representation of dates.
+#'
+#'
+#' @examples
+#' as.serialdate(as.Date('2025-02-28'))
+#' as.serialdate(as.Date('2025-03-01'))
+#' as.serialdate('1970-01-01')
+#' as.serialdate('1900-03-01')
+#' as.serialdate('1900-01-01')
+#' as.serialdate(as.Date('1970-01-01'):as.Date('1970-12-31')) - 25569
+#'
+#' @export
+as.serialdate <- function(x) {
+  # If x is a character, attempt to convert to a date first
+  if (mode(x) == 'character') {
+    x <- as.Date(x)
+  }
+
+  # 25569   = Jan 1, 1970 in Excel
+  # 0       = Jan 1, 1970 in R
+  # 367     = Jan 1, 1901 in Excel
+  # -25202  = Jan 1, 1901 in R
+  # 61      = Mar 1, 1900 in Excel
+  # -25508  = Mar 1, 1900 in R
+
+  y <- as.numeric(x) + 25569
+
+  # HOWEVER, anythying prior to Mar 1, 1900 in Excel is wrong!
+  # Because Feb 29, 1900 *did not exist* but Excel thinks it did
+  if (any(y < 61)) {
+    warning('Serial representation of dates prior to 1900-03-01 will not match Excel because Excel believes (incorrectly) that 1900 was a leap year.')
+  }
+
+  return(y)
+}
+
+
+
+#' Flatten whitespace
+#'
+#' @description
+#' Flatten any whitespace to be copy-paste safe, meaning no
+#' tab or newline characters
+#'
+#' @param	x   a character vector
+#'
+#' @return
+#' Returns a vector of values with the same length as \code{x}.
+#' All whitespace is replaced with single
+#'
+#' @examples
+#' flatten_whitespace(' This is a newline\nAnd now it is gone! ')
+#' flatten_whitespace(' This is a newline\n\rAnd now it is gone! ')
+#' flatten_whitespace(' This is a newline\r\n\n\nAnd now it is gone! ')
+#' flatten_whitespace(' This is a newline\n\n\nAnd now it is gone! ')
+#'
+#' @export
+flatten_whitespace <- function(x) {
+  x <- gsub('(\\r\\n|\\n\\r)+', ' *** ', x)
+  x <- gsub('(\\r|\\n|[ ]\\*\\*\\*[ ])+', ' *** ', x)
+  x <- gsub('\\s+', ' ', x)
+  trim(x)
+}
+
+
